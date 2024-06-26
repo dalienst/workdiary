@@ -139,3 +139,7 @@ TODO.txt
 # DATA
 data.json
 data.js
+
+
+# gcloud files
+app.yaml
