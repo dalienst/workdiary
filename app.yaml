@@ -3,14 +3,14 @@ runtime: python312
 entrypoint: gunicorn -b :$PORT workdiary.wsgi
 
 env_variables:
-  SECRET_KEY: "django-insecure-w^70b+v=^(#v2o#2di+4_x)3z0kmut8(bf_cc*6fgusftai%ui"
+  SECRET_KEY: projects/150769871050/secrets/SECRET_KEY/versions/1
   DATABASE_URL: "postgresql://dalienst:Fwd4UarcP8Tu@ep-divine-sea-056355.us-east-2.aws.neon.tech/workdiary"
   CLOUDINARY_API_KEY: "359461268746772"
   CLOUDINARY_API_SECRET: "b8nD3oDq6wtaX4EizXT7CsQekCQ"
   CLOUDINARY_NAME: "daltechafrica"
   DEFAULT_FROM_EMAIL: "developerowino@gmail.com"
   EMAIL_USER: "developerowino@gmail.com"
-  SENDGRID_API_KEY: "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"
+  SENDGRID_API_KEY: projects/150769871050/secrets/SENDGRID_API_KEY/versions/1
   EMAIL_HOST_PASSWORD: "xryo xzge qoed tafm"
   ALLOWED_HOSTS: "ndovu-wetu.ew.r.appspot.com"
   CORS_ORIGIN_WHITELIST: "https://kazini.vercel.app"
