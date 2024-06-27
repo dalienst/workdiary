@@ -12,7 +12,7 @@ env_variables:
   EMAIL_USER: "developerowino@gmail.com"
   SENDGRID_API_KEY: "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"
   EMAIL_HOST_PASSWORD: "xryo xzge qoed tafm"
-  ALLOWED_HOSTS: "work-diary-427620.ew.r.appspot.com"
+  ALLOWED_HOSTS: "ndovu-wetu.ew.r.appspot.com"
   CORS_ORIGIN_WHITELIST: "https://kazini.vercel.app"
   CORS_ALLOWED_ORIGINS: "https://kazini.vercel.app"
   CSRF_TRUSTED_ORIGINS: "https://kazini.vercel.app"
