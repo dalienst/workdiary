@@ -1,0 +1,31 @@
+runtime: python312
+
+entrypoint: gunicorn -b :$PORT workdiary.wsgi
+
+env_variables:
+  SECRET_KEY: "django-insecure-w^70b+v=^(#v2o#2di+4_x)3z0kmut8(bf_cc*6fgusftai%ui"
+  DATABASE_URL: "postgresql://dalienst:Fwd4UarcP8Tu@ep-divine-sea-056355.us-east-2.aws.neon.tech/workdiary"
+  CLOUDINARY_API_KEY: "359461268746772"
+  CLOUDINARY_API_SECRET: "b8nD3oDq6wtaX4EizXT7CsQekCQ"
+  CLOUDINARY_NAME: "daltechafrica"
+  DEFAULT_FROM_EMAIL: "developerowino@gmail.com"
+  EMAIL_USER: "developerowino@gmail.com"
+  SENDGRID_API_KEY: "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"
+  EMAIL_HOST_PASSWORD: "xryo xzge qoed tafm"
+  ALLOWED_HOSTS: "work-diary-427620.ew.r.appspot.com"
+  CORS_ORIGIN_WHITELIST: "https://kazini.vercel.app"
+  CORS_ALLOWED_ORIGINS: "https://kazini.vercel.app"
+  CSRF_TRUSTED_ORIGINS: "https://kazini.vercel.app"
+  DOMAIN: "https://kazini.vercel.app"
+
+handlers:
+  - url: /static
+    static_dir: /static
+
+  - url: /.*
+    script: auto
+
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  min_instances: 1
+  max_instances: 5
