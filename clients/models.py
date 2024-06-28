@@ -10,7 +10,7 @@ User = get_user_model()
 
 
 class Client(TimeStampedModel, UniversalIdModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="clients")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="clients")
     name = models.CharField(max_length=255)
     email = models.EmailField()
     phone = models.CharField(max_length=15, blank=True, null=True)
