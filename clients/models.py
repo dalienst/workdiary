@@ -4,12 +4,12 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
 
-from accounts.abstracts import TimeStampedModel, UbiversalIdModel
+from accounts.abstracts import TimeStampedModel, UniversalIdModel
 
 User = get_user_model()
 
 
-class Client(TimeStampedModel, UbiversalIdModel):
+class Client(TimeStampedModel, UniversalIdModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="clients")
     name = models.CharField(max_length=255)
     email = models.EmailField()
@@ -19,6 +19,7 @@ class Client(TimeStampedModel, UbiversalIdModel):
     class Meta:
         verbose_name = "Client"
         verbose_name_plural = "Clients"
+        ordering = ["-created_at"]
 
     def __str__(self):
         return self.email
