@@ -123,6 +123,7 @@ class MimimalInvoiceSerializer(serializers.ModelSerializer):
             "status",
             "items",
             "slug",
+            "reference",
             "total_amount",
             "created_at",
             "updated_at",
