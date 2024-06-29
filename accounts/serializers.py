@@ -8,6 +8,8 @@ from accounts.validators import (
     validate_password_symbol,
     validate_password_uppercase,
 )
+from clients.serializers import ClientSerializer
+from invoices.serializers import InvoiceSerializer
 
 User = get_user_model()
 
@@ -35,6 +37,8 @@ class UserSerializer(serializers.ModelSerializer):
             validate_password_lowercase,
         ],
     )
+    clients = serializers.SerializerMethodField(read_only=True)
+    invoices = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
@@ -53,6 +57,8 @@ class UserSerializer(serializers.ModelSerializer):
             "is_active",
             "created_at",
             "updated_at",
+            "clients",
+            "invoices",
         )
 
     def create(self, validated_data):
@@ -60,6 +66,16 @@ class UserSerializer(serializers.ModelSerializer):
         user.is_active = True
         user.save()
         return user
+
+    def get_clients(self, obj):
+        clients = obj.clients.all()
+        serializer = ClientSerializer(clients, many=True)
+        return serializer.data
+
+    def get_invoices(self, obj):
+        invoices = obj.invoices.all()
+        serializer = InvoiceSerializer(invoices, many=True)
+        return serializer.data
 
 
 class UserLoginSerializer(serializers.Serializer):

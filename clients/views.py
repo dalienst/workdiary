@@ -26,7 +26,7 @@ class ClientDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [
         IsAuthenticated,
     ]
-    lookup_field = "slug"
+    lookup_field = "client_reference"
 
     def get_queryset(self):
         return Client.objects.filter(user=self.request.user)
