@@ -39,8 +39,8 @@ def slug_pre_save(sender, instance, **kwargs) -> None:
 
 @receiver(pre_save, sender=Client)
 def client_reference_pre_save(sender, instance, **kwargs) -> None:
-    if instance.reference is None or instance.reference == "":
-        instance.reference = generate_reference()
+    if instance.client_reference is None or instance.client_reference == "":
+        instance.client_reference = generate_reference()
 
 
 def generate_reference():
