@@ -13,10 +13,10 @@ env_variables:
   SENDGRID_API_KEY: projects/150769871050/secrets/SENDGRID_API_KEY/versions/1
   EMAIL_HOST_PASSWORD: projects/150769871050/secrets/EMAIL_HOST_PASSWORD/versions/1
   ALLOWED_HOSTS: "ndovu-wetu.ew.r.appspot.com"
-  CORS_ORIGIN_WHITELIST: "https://malipo.vercel.app"
-  CORS_ALLOWED_ORIGINS: "https://malipo.vercel.app"
-  CSRF_TRUSTED_ORIGINS: "https://malipo.vercel.app"
-  DOMAIN: "https://malipo.vercel.app"
+  CORS_ORIGIN_WHITELIST: projects/150769871050/secrets/CORS_ORIGIN_WHITELIST/versions/2
+  CORS_ALLOWED_ORIGINS: projects/150769871050/secrets/CORS_ALLOWED_ORIGINS/versions/2
+  CSRF_TRUSTED_ORIGINS: projects/150769871050/secrets/CSRF_TRUSTED_ORIGINS/versions/2
+  DOMAIN: projects/150769871050/secrets/DOMAIN/versions/2
 
 handlers:
   - url: /static
