@@ -31,7 +31,7 @@ class InvoiceItemSerializer(serializers.ModelSerializer):
 
 class InvoiceSerializer(serializers.ModelSerializer):
     client = serializers.SlugRelatedField(
-        slug_field="slug", queryset=Client.objects.all()
+        slug_field="email", queryset=Client.objects.all()
     )
     user = serializers.CharField(read_only=True, source="user.username")
     title = serializers.CharField(max_length=255)
