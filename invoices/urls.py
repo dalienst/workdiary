@@ -12,7 +12,7 @@ urlpatterns = [
     path("", InvoiceListCreateView.as_view(), name="invoice-list"),
     path("<str:slug>/", InvoiceDetailView.as_view(), name="invoice-detail"),
     path(
-        "<str:reference>/client/",
+        "<str:slug>/client/",
         InvoiceClientDetailView.as_view(),
         name="invoice-client-detail",
     ),
