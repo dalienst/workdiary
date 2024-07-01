@@ -23,14 +23,7 @@ class Invoice(UniversalIdModel, TimeStampedModel):
     title = models.CharField(max_length=255)
     issue_date = models.DateField()
     due_date = models.DateField()
-    status = models.CharField(
-        max_length=50,
-        choices=[
-            ("pending", "Pending"),
-            ("paid", "Paid"),
-        ],
-        default="pending",
-    )
+    is_paid = models.BooleanField(default=False)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     slug = models.SlugField(max_length=255, blank=True, null=True, unique=True)
     reference = models.CharField(max_length=10, blank=True, null=True, unique=True)

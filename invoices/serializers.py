@@ -37,7 +37,6 @@ class InvoiceSerializer(serializers.ModelSerializer):
     title = serializers.CharField(max_length=255)
     issue_date = serializers.DateField()
     due_date = serializers.DateField()
-    status = serializers.CharField(max_length=50, default="pending")
     items = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -49,7 +48,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "title",
             "issue_date",
             "due_date",
-            "status",
+            "is_paid",
             "total_amount",
             "items",
             "slug",
@@ -81,7 +80,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
         instance.title = validated_data.get("title", instance.title)
         instance.issue_date = validated_data.get("issue_date", instance.issue_date)
         instance.due_date = validated_data.get("due_date", instance.due_date)
-        instance.status = validated_data.get("status", instance.status)
+        instance.is_paid = validated_data.get("is_paid", instance.is_paid)
         instance.save()
 
         if items_data is not None:
@@ -120,7 +119,7 @@ class MimimalInvoiceSerializer(serializers.ModelSerializer):
             "title",
             "issue_date",
             "due_date",
-            "status",
+            "is_paid",
             "items",
             "slug",
             "reference",
