@@ -62,6 +62,7 @@ class User(
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_verified = models.BooleanField(default=False)
+    is_client = models.BooleanField(default=False)
 
     objects = UserManager()
     REQUIRED_FIELDS = ["first_name", "last_name", "password"]
