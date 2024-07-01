@@ -56,7 +56,7 @@ def reference_pre_save(sender, instance, **kwargs) -> None:
 def generate_reference():
     characters = string.ascii_letters + string.digits
     random_string = "".join(random.choices(characters, k=8))
-    return f"#{random_string}"
+    return f"{random_string}"
 
 
 class InvoiceItem(UniversalIdModel, TimeStampedModel):
