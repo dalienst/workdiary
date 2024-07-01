@@ -1,7 +1,10 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from clients.models import Client
 from invoices.models import Invoice, InvoiceItem
+
+User = get_user_model()
 
 
 class InvoiceItemSerializer(serializers.ModelSerializer):
@@ -107,9 +110,20 @@ class MinimalClientSerializer(serializers.ModelSerializer):
         )
 
 
+class MinimalUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "email",
+            "first_name",
+            "last_name",
+        )
+
+
 class MimimalInvoiceSerializer(serializers.ModelSerializer):
     client = MinimalClientSerializer(read_only=True)
     items = serializers.SerializerMethodField(read_only=True)
+    user = MinimalUserSerializer(read_only=True)
 
     class Meta:
         model = Invoice
@@ -122,6 +136,7 @@ class MimimalInvoiceSerializer(serializers.ModelSerializer):
             "is_paid",
             "items",
             "slug",
+            "user",
             "reference",
             "total_amount",
             "created_at",
