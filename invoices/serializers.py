@@ -102,7 +102,6 @@ class MinimalClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = (
-            "id",
             "name",
             "email",
             "phone",
