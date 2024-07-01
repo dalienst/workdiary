@@ -128,14 +128,12 @@ class MimimalInvoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invoice
         fields = (
-            "id",
             "client",
             "title",
             "issue_date",
             "due_date",
             "is_paid",
             "items",
-            "slug",
             "user",
             "reference",
             "total_amount",
