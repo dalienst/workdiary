@@ -1,7 +1,10 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from clients.models import Client
 from invoices.models import Invoice, InvoiceItem
+
+User = get_user_model()
 
 
 class InvoiceItemSerializer(serializers.ModelSerializer):
@@ -37,7 +40,6 @@ class InvoiceSerializer(serializers.ModelSerializer):
     title = serializers.CharField(max_length=255)
     issue_date = serializers.DateField()
     due_date = serializers.DateField()
-    status = serializers.CharField(max_length=50, default="pending")
     items = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -49,7 +51,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "title",
             "issue_date",
             "due_date",
-            "status",
+            "is_paid",
             "total_amount",
             "items",
             "slug",
@@ -81,7 +83,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
         instance.title = validated_data.get("title", instance.title)
         instance.issue_date = validated_data.get("issue_date", instance.issue_date)
         instance.due_date = validated_data.get("due_date", instance.due_date)
-        instance.status = validated_data.get("status", instance.status)
+        instance.is_paid = validated_data.get("is_paid", instance.is_paid)
         instance.save()
 
         if items_data is not None:
@@ -100,7 +102,6 @@ class MinimalClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = (
-            "id",
             "name",
             "email",
             "phone",
@@ -108,21 +109,31 @@ class MinimalClientSerializer(serializers.ModelSerializer):
         )
 
 
+class MinimalUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "email",
+            "first_name",
+            "last_name",
+        )
+
+
 class MimimalInvoiceSerializer(serializers.ModelSerializer):
     client = MinimalClientSerializer(read_only=True)
     items = serializers.SerializerMethodField(read_only=True)
+    user = MinimalUserSerializer(read_only=True)
 
     class Meta:
         model = Invoice
         fields = (
-            "id",
             "client",
             "title",
             "issue_date",
             "due_date",
-            "status",
+            "is_paid",
             "items",
-            "slug",
+            "user",
             "reference",
             "total_amount",
             "created_at",

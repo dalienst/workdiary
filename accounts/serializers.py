@@ -55,6 +55,7 @@ class UserSerializer(serializers.ModelSerializer):
             "is_staff",
             "is_superuser",
             "is_active",
+            "is_client",
             "created_at",
             "updated_at",
             "clients",
