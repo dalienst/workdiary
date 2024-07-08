@@ -7,7 +7,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255)
     start_date = serializers.DateField()
     end_date = serializers.DateField()
-    owner = serializers.CharField(read_only=True, source="owner.username")
+    user = serializers.CharField(read_only=True, source="user.username")
 
     class Meta:
         model = Project
@@ -17,7 +17,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "slug",
             "start_date",
             "end_date",
-            "owner",
+            "user",
             "reference",
             "created_at",
             "updated_at",

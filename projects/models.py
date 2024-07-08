@@ -12,7 +12,7 @@ User = get_user_model()
 
 
 class Project(UniversalIdModel, TimeStampedModel, AbstractProjectModel):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="projects")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="projects")
     slug = models.SlugField(max_length=400, unique=True, blank=True, null=True)
     reference = models.CharField(max_length=10, blank=True, null=True, unique=True)
 
