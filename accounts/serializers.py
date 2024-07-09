@@ -10,6 +10,8 @@ from accounts.validators import (
 )
 from clients.serializers import ClientSerializer
 from invoices.serializers import InvoiceSerializer
+from projects.serializers import ProjectSerializer
+from tasks.serializers import TaskSerializer
 
 User = get_user_model()
 
@@ -39,6 +41,8 @@ class UserSerializer(serializers.ModelSerializer):
     )
     clients = serializers.SerializerMethodField(read_only=True)
     invoices = serializers.SerializerMethodField(read_only=True)
+    projects = serializers.SerializerMethodField(read_only=True)
+    tasks = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
@@ -60,6 +64,7 @@ class UserSerializer(serializers.ModelSerializer):
             "updated_at",
             "clients",
             "invoices",
+            "projects",
         )
 
     def create(self, validated_data):
@@ -76,6 +81,16 @@ class UserSerializer(serializers.ModelSerializer):
     def get_invoices(self, obj):
         invoices = obj.invoices.all()
         serializer = InvoiceSerializer(invoices, many=True)
+        return serializer.data
+
+    def get_projects(self, obj):
+        projects = obj.projects.all()
+        serializer = ProjectSerializer(projects, many=True)
+        return serializer.data
+
+    def get_tasks(self, obj):
+        tasks = obj.tasks.all()
+        serializer = TaskSerializer(tasks, many=True)
         return serializer.data
 
 

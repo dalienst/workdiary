@@ -33,6 +33,7 @@ class Task(TimeStampedModel, UniversalIdModel):
         ("high", "High"),
     )
     priority = models.CharField(max_length=100, choices=TASK_PRIORITY, default="low")
+    due_date = models.DateField()
 
     slug = models.SlugField(max_length=400, unique=True, blank=True, null=True)
 

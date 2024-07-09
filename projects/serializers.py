@@ -1,26 +1,29 @@
 from rest_framework import serializers
 
 from projects.models import Project
+from tasks.serializers import TaskSerializer
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=255)
-    start_date = serializers.DateField()
     end_date = serializers.DateField()
+    name = serializers.CharField(max_length=255)
+    project_tasks = serializers.SerializerMethodField(read_only=True)
+    start_date = serializers.DateField()
     user = serializers.CharField(read_only=True, source="user.username")
 
     class Meta:
         model = Project
         fields = (
+            "created_at",
+            "end_date",
             "id",
             "name",
+            "project_tasks",
+            "reference",
             "slug",
             "start_date",
-            "end_date",
-            "user",
-            "reference",
-            "created_at",
             "updated_at",
+            "user",
         )
 
     def validate(self, attrs):
@@ -29,3 +32,8 @@ class ProjectSerializer(serializers.ModelSerializer):
                 "The start date cannot be after the end date"
             )
         return attrs
+
+    def get_project_tasks(self, obj):
+        project_tasks = obj.project_tasks.all()
+        serializer = TaskSerializer(project_tasks, many=True)
+        return serializer.data
