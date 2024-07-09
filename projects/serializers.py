@@ -30,10 +30,18 @@ class ProjectSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
-        if attrs["start_date"] > attrs["end_date"]:
+        start_date = attrs.get(
+            "start_date", self.instance.start_date if self.instance else None
+        )
+        end_date = attrs.get(
+            "end_date", self.instance.end_date if self.instance else None
+        )
+
+        if start_date and end_date and start_date > end_date:
             raise serializers.ValidationError(
                 "The start date cannot be after the end date"
             )
+
         return attrs
 
     def get_project_tasks(self, obj):
