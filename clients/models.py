@@ -1,6 +1,3 @@
-import random
-import string
-
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.signals import pre_save
@@ -8,6 +5,7 @@ from django.dispatch import receiver
 from django.utils.text import slugify
 
 from accounts.abstracts import TimeStampedModel, UniversalIdModel
+from invoices.utils import generate_reference
 
 User = get_user_model()
 
@@ -41,9 +39,3 @@ def slug_pre_save(sender, instance, **kwargs) -> None:
 def client_reference_pre_save(sender, instance, **kwargs) -> None:
     if instance.client_reference is None or instance.client_reference == "":
         instance.client_reference = generate_reference()
-
-
-def generate_reference():
-    characters = string.ascii_letters + string.digits
-    random_string = "".join(random.choices(characters, k=8))
-    return f"{random_string}"
