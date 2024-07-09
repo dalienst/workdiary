@@ -26,6 +26,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "start_date",
             "updated_at",
             "user",
+            "description",
         )
 
     def validate(self, attrs):
