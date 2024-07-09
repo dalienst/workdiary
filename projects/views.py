@@ -15,3 +15,13 @@ class ProjectListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ProjectSerializer
+    queryset = Project.objects.all()
+    permission_classes = [IsAuthenticated]
+    lookup_field = "slug"
+
+    def get_queryset(self):
+        return Project.objects.filter(user=self.request.user)
