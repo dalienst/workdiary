@@ -65,6 +65,7 @@ class UserSerializer(serializers.ModelSerializer):
             "clients",
             "invoices",
             "projects",
+            "tasks",
         )
 
     def create(self, validated_data):
