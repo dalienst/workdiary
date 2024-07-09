@@ -16,6 +16,13 @@ class Project(UniversalIdModel, TimeStampedModel, AbstractProjectModel):
     slug = models.SlugField(max_length=400, unique=True, blank=True, null=True)
     reference = models.CharField(max_length=10, blank=True, null=True, unique=True)
 
+    PROJECT_STATUS = (
+        ("pending", "Pending"),
+        ("in_progress", "In Progress"),
+        ("completed", "Completed"),
+    )
+    status = models.CharField(max_length=100, choices=PROJECT_STATUS, default="pending")
+
     def __str__(self):
         return self.name
 
