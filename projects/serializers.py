@@ -10,7 +10,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     project_tasks = serializers.SerializerMethodField(read_only=True)
     # start_date = serializers.DateField()
     user = serializers.CharField(read_only=True, source="user.username")
-    status = serializers.CharField(max_length=50, default="pending")
+    status = serializers.CharField(max_length=50, default="in_progress")
 
     class Meta:
         model = Project
