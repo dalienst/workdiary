@@ -43,7 +43,7 @@ class Task(TimeStampedModel, UniversalIdModel):
     class Meta:
         verbose_name = "Task"
         verbose_name_plural = "Tasks"
-        ordering = ["-created_at"]
+        ordering = ["created_at"]
 
 
 @receiver(pre_save, sender=Task)

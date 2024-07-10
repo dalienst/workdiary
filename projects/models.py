@@ -29,7 +29,7 @@ class Project(UniversalIdModel, TimeStampedModel, AbstractProjectModel):
     class Meta:
         verbose_name = "Project"
         verbose_name_plural = "Projects"
-        ordering = ["-created_at"]
+        ordering = ["created_at", "status"]
 
 
 @receiver(pre_save, sender=Project)
