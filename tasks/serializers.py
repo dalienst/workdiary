@@ -32,13 +32,13 @@ class TaskSerializer(serializers.ModelSerializer):
             "updated_at",
         )
 
-    def validate(self, data):
-        project = data.get("project")
-        due_date = data.get("due_date")
+    # def validate(self, data):
+    #     project = data.get("project")
+    #     due_date = data.get("due_date")
 
-        if due_date and project and due_date > project.end_date:
-            raise serializers.ValidationError(
-                "The due date cannot be after the project end date"
-            )
+    #     if due_date and project and due_date > project.end_date:
+    #         raise serializers.ValidationError(
+    #             "The due date cannot be after the project end date"
+    #         )
 
-        return data
+    #     return data
