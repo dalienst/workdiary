@@ -5,7 +5,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from accounts.serializers import UserLoginSerializer, UserSerializer
+from accounts.serializers import (
+    CeoSerializer,
+    EmployeeSerializer,
+    UserLoginSerializer,
+    UserSerializer,
+)
 
 User = get_user_model()
 
@@ -64,9 +69,38 @@ class LogoutView(APIView):
         )
 
 
+"""
+Different user registration views
+"""
+
+
 class UserRegistrationView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class CeoRegistrationView(APIView):
+    serializer_class = CeoSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class EmployeeCreateView(APIView):
+    serializer_class = EmployeeSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)

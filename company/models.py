@@ -16,7 +16,7 @@ class Company(UniversalIdModel, TimeStampedModel):
     """
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="company")
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     location = models.CharField(max_length=255)
     contact = models.CharField(max_length=255)
     no_of_employees = models.CharField(max_length=255)

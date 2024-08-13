@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
@@ -9,6 +10,8 @@ from accounts.validators import (
     validate_password_uppercase,
 )
 from clients.serializers import ClientSerializer
+from company.serializers import CompanySerializer
+from invitation.models import Invitation
 from invoices.serializers import InvoiceSerializer
 from projects.serializers import ProjectSerializer
 from tasks.serializers import TaskSerializer
@@ -16,7 +19,7 @@ from tasks.serializers import TaskSerializer
 User = get_user_model()
 
 
-class UserSerializer(serializers.ModelSerializer):
+class BaseUserSerializer(serializers.ModelSerializer):
     """
     Serializing the User model
     """
@@ -43,6 +46,7 @@ class UserSerializer(serializers.ModelSerializer):
     invoices = serializers.SerializerMethodField(read_only=True)
     projects = serializers.SerializerMethodField(read_only=True)
     tasks = serializers.SerializerMethodField(read_only=True)
+    company = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
@@ -66,10 +70,12 @@ class UserSerializer(serializers.ModelSerializer):
             "invoices",
             "projects",
             "tasks",
+            "company",
         )
 
-    def create(self, validated_data):
+    def create(self, validated_data, role_field):
         user = User.objects.create_user(**validated_data)
+        setattr(user, role_field, True)
         user.is_active = True
         user.save()
         return user
@@ -93,6 +99,51 @@ class UserSerializer(serializers.ModelSerializer):
         tasks = obj.tasks.all()
         serializer = TaskSerializer(tasks, many=True)
         return serializer.data
+
+    def get_company(self, obj):
+        company = obj.company
+        serializer = CompanySerializer(company)
+        return serializer.data
+
+
+class UserSerializer(BaseUserSerializer):
+    def create(self, validated_data):
+        return self.create(validated_data, "is_personal")
+
+
+class CeoSerializer(BaseUserSerializer):
+    def create(self, validated_data):
+        return self.create(validated_data, "is_ceo")
+
+
+class EmployeeSerializer(BaseUserSerializer):
+    token = serializers.CharField(write_only=True, required=True)
+
+    class Meta(BaseUserSerializer.Meta):
+        fields = BaseUserSerializer.Meta.fields + ("token",)
+
+    def create(self, validated_data):
+        token = validated_data.pop("token", None)
+
+        # Validate the token
+        try:
+            invitation = Invitation.objects.get(token=token)
+        except Invitation.DoesNotExist:
+            raise serializers.ValidationError("Invalid or expired token.")
+
+        if invitation.expiry < timezone.now():
+            raise serializers.ValidationError("Token has expired.")
+
+        # Create the user and set the employee flag
+        user = self.create_user(validated_data, "is_employee")
+
+        # Associate the user with the company
+        user.company.add(invitation.company)
+
+        # Optionally, you may want to delete the invitation after use
+        invitation.delete()
+
+        return user
 
 
 class UserLoginSerializer(serializers.Serializer):
