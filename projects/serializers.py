@@ -9,7 +9,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255)
     project_tasks = serializers.SerializerMethodField(read_only=True)
     # start_date = serializers.DateField()
-    user = serializers.CharField(read_only=True, source="user.username")
+    user = serializers.CharField(read_only=True, source="user.email")
     status = serializers.CharField(max_length=50, default="in_progress")
 
     class Meta:

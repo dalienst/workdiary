@@ -8,7 +8,7 @@ User = get_user_model()
 
 class CompanySerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255)
-    user = serializers.CharField(read_only=True, source="user.username")
+    user = serializers.CharField(read_only=True, source="user.email")
     location = serializers.CharField(max_length=255)
     contact = serializers.CharField(max_length=255)
     no_of_employees = serializers.CharField(max_length=255)

@@ -14,7 +14,7 @@ class InvoiceItemSerializer(serializers.ModelSerializer):
     description = serializers.CharField(max_length=10000)
     quantity = serializers.IntegerField(default=1)
     unit_price = serializers.DecimalField(max_digits=10, decimal_places=2)
-    user = serializers.CharField(read_only=True, source="user.username")
+    user = serializers.CharField(read_only=True, source="user.email")
 
     class Meta:
         model = InvoiceItem
@@ -36,7 +36,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
     client = serializers.SlugRelatedField(
         slug_field="email", queryset=Client.objects.all()
     )
-    user = serializers.CharField(read_only=True, source="user.username")
+    user = serializers.CharField(read_only=True, source="user.email")
     title = serializers.CharField(max_length=255)
     issue_date = serializers.DateField()
     due_date = serializers.DateField()
