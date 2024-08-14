@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "invitation",
     "roles",
     "schedules",
+    "timesheets",
 ]
 
 MIDDLEWARE = [
