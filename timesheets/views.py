@@ -23,6 +23,7 @@ Rules:
 7. Prevent checkin changes
 8. Use server time
 9. Prevent checkin after shift end time in a day: only checkin on or after the shift start time but not after the shift end time. One has to wait for the next shift.
+10. Confirm if user belongs to the shift company
 """
 
 
@@ -67,6 +68,16 @@ class CheckinView(APIView):
             if day not in workdays:
                 return Response(
                     {"detail": "Invalid workday."}, status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Check if the user belongs to the shift company
+            if not (
+                user.companies.filter(id=shift.company.id).exists()
+                or user.company.filter(id=shift.company.id).exists()
+            ):
+                return Response(
+                    {"detail": "User does not belong to the shift company."},
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             # Check if user has already checked in

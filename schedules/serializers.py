@@ -6,7 +6,7 @@ from schedules.models import Schedule
 
 class ScheduleSerializer(serializers.ModelSerializer):
     company = serializers.SlugRelatedField(
-        slug_field="name", queryset=Company.objects.all()
+        slug_field="reference", queryset=Company.objects.all()
     )
     name = serializers.CharField(max_length=255)
     workdays = serializers.ListField(child=serializers.CharField(max_length=10))
