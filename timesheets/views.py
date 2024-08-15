@@ -1,5 +1,5 @@
 from django.utils import timezone
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -100,3 +100,45 @@ class CheckinView(APIView):
 #                 return Response(
 #                     {"detail": "Invalid shift."}, status=status.HTTP_400_BAD_REQUEST
 #                 )
+
+
+class CheckoutView(generics.RetrieveUpdateAPIView):
+    queryset = Timesheet.objects.all()
+    serializer_class = TimesheetSerializer
+    permission_classes = [
+        IsAuthenticated,
+        IsCeoOrIsManagerOrIsEmployee,
+    ]
+    lookup_field = "slug"
+
+    def get_queryset(self):
+        return Timesheet.objects.filter(user=self.request.user)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # Check if already checked out
+        if instance.checkout:
+            return Response(
+                {"detail": "User has already checked out."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # automatically check out
+        instance.checkout = timezone.now()
+
+        # calculate total hours
+        total_hours = (instance.checkout - instance.checkin).total_seconds() / 3600
+        instance.total_hours = round(total_hours, 2)
+
+        # Determine if this time qualifies as overtime based on the shift's schedule
+        if (
+            total_hours
+            > (instance.shift.end_time - instance.shift.start_time).seconds / 3600
+        ):
+            instance.is_overtime = True
+
+        instance.save()
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
