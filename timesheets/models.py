@@ -29,3 +29,6 @@ class Timesheet(UniversalIdModel, TimeStampedModel, ReferenceSlugModel):
         verbose_name = "Timesheet"
         verbose_name_plural = "Timesheets"
         unique_together = ("user", "shift", "date")
+
+    def __str__(self):
+        return f"{self.user} - {self.shift} - {self.date} - {self.status}"

@@ -66,6 +66,8 @@ class CheckinView(APIView):
                     {"detail": "Invalid workday."}, status=status.HTTP_400_BAD_REQUEST
                 )
 
+            # check status
+
             # Check if user has already checked in
             timesheet, created = Timesheet.objects.get_or_create(
                 user=user, shift=shift, date=date, defaults={"checkin": timezone.now()}
@@ -83,13 +85,30 @@ class CheckinView(APIView):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
                 else:
+
+                    checkin_time = timezone.now()
+                    if checkin_time >= shift.start_time:
+                        timesheet.status = "Late"
+                    else:
+                        timesheet.status = "Regular"
+
                     timesheet.checkin = timezone.now()
                     timesheet.save()
+                    serialized_timesheet = TimesheetSerializer(timesheet).validated_data
                     return Response(
-                        {"detail": "User has checked in successfully."},
+                        serialized_timesheet,
                         status=status.HTTP_200_OK,
                     )
             else:
+                checkin_time = timezone.now().time()
+                if checkin_time > shift.start_time:
+                    timesheet.status = "Late"
+                else:
+                    timesheet.status = "Regular"
+
+                timesheet.checkin = timezone.now()
+                timesheet.save()
+                # TODO: Ask Lewis on serializing
                 return Response(
                     {"detail": "User has checked in successfully."},
                     status=status.HTTP_200_OK,
