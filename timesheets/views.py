@@ -51,6 +51,7 @@ class CheckinView(APIView):
             user = request.user
             shift = serializer.validated_data.get("shift")
             date = serializer.validated_data.get("date")
+            checkin_time = timezone.now().time()
 
             # checking if the shift and date are valid
             try:
@@ -91,8 +92,9 @@ class CheckinView(APIView):
                         {"detail": "User has already checked out."},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
+                # TODO: Ask for help from Lewis
                 # prevent checkin after shift end time in a day before or on the shift start time
-                elif timesheet.checkin.time() > shift.end_time:
+                elif checkin_time > shift.end_time:
                     return Response(
                         {"detail": "You cannot check in after the shift end time."},
                         status=status.HTTP_400_BAD_REQUEST,
@@ -110,7 +112,7 @@ class CheckinView(APIView):
                 else:
 
                     checkin_time = timezone.now()
-                    if checkin_time >= shift.start_time:
+                    if checkin_time > shift.start_time:
                         timesheet.status = "Late"
                     else:
                         timesheet.status = "Regular"
