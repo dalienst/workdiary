@@ -175,12 +175,16 @@ class CheckoutView(generics.RetrieveUpdateAPIView):
         instance.total_hours = round(total_hours, 2)
 
         # Determine if this time qualifies as overtime based on the shift's schedule
-        start_time = datetime.combine(instance.date, instance.shift.start_time)
-        end_time = datetime.combine(instance.date, instance.shift.end_time)
-        shift_duration = (end_time - start_time).total_seconds() / 3600
+        # start_time = datetime.combine(instance.date, instance.shift.start_time)
+        # end_time = datetime.combine(instance.date, instance.shift.end_time)
+        # shift_duration = (end_time - start_time).total_seconds() / 3600
 
-        if total_hours > shift_duration:
+        # if total_hours > shift_duration:
+        #     instance.is_overtime = True
+        if instance.shift.end_time <= instance.checkout.time():
             instance.is_overtime = True
+        else:
+            instance.is_overtime = False
 
         instance.save()
 
