@@ -187,15 +187,12 @@ class CheckoutView(generics.RetrieveUpdateAPIView):
         ).total_seconds() / 3600
         shift_duration = round(shift_duration, 2)
 
-        if total_hours > shift_duration:
+        overtime_threshold = float(instance.shift.overtime_threshold)
+
+        if total_hours > shift_duration + overtime_threshold:
             instance.is_overtime = True
         else:
             instance.is_overtime = False
-
-        # if instance.shift.end_time <= instance.checkout.time():
-        #     instance.is_overtime = True
-        # else:
-        #     instance.is_overtime = False
 
         instance.save()
 

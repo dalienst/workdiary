@@ -16,6 +16,12 @@ class Schedule(UniversalIdModel, TimeStampedModel, ReferenceSlugModel):
     start_time = models.TimeField()
     end_time = models.TimeField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="schedules")
+    overtime_threshold = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0.0,
+        help_text="Number of hours after which overtime applies.",
+    )
 
     class Meta:
         verbose_name = "Schedule"

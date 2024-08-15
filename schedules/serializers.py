@@ -13,6 +13,12 @@ class ScheduleSerializer(serializers.ModelSerializer):
     start_time = serializers.TimeField()
     end_time = serializers.TimeField()
     user = serializers.CharField(read_only=True, source="user.email")
+    overtime_threshold = serializers.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0.0,
+        help_text="Number of hours after which overtime applies.",
+    )
 
     class Meta:
         model = Schedule
@@ -28,4 +34,5 @@ class ScheduleSerializer(serializers.ModelSerializer):
             "updated_at",
             "slug",
             "reference",
+            "overtime_threshold",
         )
