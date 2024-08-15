@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -20,6 +21,18 @@ Rules:
 7. Prevent checkin changes
 8. Use server time
 """
+
+
+class TimesheetList(generics.ListAPIView):
+    serializer_class = TimesheetSerializer
+    queryset = Timesheet.objects.all()
+    permission_classes = [
+        IsCeoOrIsManagerOrIsEmployee,
+        IsAuthenticated,
+    ]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
 
 class CheckinView(APIView):
@@ -142,3 +155,21 @@ class CheckoutView(generics.RetrieveUpdateAPIView):
 
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+
+class FinanceTimeSheetListView(generics.ListAPIView):
+    queryset = Timesheet.objects.all()
+    serializer_class = TimesheetSerializer
+    permission_classes = [
+        IsAuthenticated,
+        IsCeoOrIsManagerOrIsEmployee,
+    ]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = [
+        "date",
+        "user__first_name",
+        "user__last_name",
+        "shift__reference",
+        "is_overtime",
+        "status",
+    ]
