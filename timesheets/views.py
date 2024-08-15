@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status
@@ -20,6 +22,7 @@ Rules:
 6. Automatically calculate the total_hours
 7. Prevent checkin changes
 8. Use server time
+9. Prevent checkin after shift end time in a day: only checkin on or after the shift start time but not after the shift end time. One has to wait for the next shift.
 """
 
 
@@ -66,8 +69,6 @@ class CheckinView(APIView):
                     {"detail": "Invalid workday."}, status=status.HTTP_400_BAD_REQUEST
                 )
 
-            # check status
-
             # Check if user has already checked in
             timesheet, created = Timesheet.objects.get_or_create(
                 user=user, shift=shift, date=date, defaults={"checkin": timezone.now()}
@@ -79,9 +80,19 @@ class CheckinView(APIView):
                         {"detail": "User has already checked out."},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
+                # elif timesheet.checkin > shift.end_time:
+                #     return Response(
+                #         {"detail": "You cannot check in after shift end time."},
+                #         status=status.HTTP_400_BAD_REQUEST,
+                #     )
                 elif timesheet.checkin:
+                    # check if user has already checked in
                     return Response(
-                        {"detail": "User has already checked in."},
+                        {
+                            "detail": "User has already checked in.",
+                            "slug": timesheet.slug,
+                            "reference": timesheet.reference,
+                        },
                         status=status.HTTP_400_BAD_REQUEST,
                     )
                 else:
@@ -110,28 +121,14 @@ class CheckinView(APIView):
                 timesheet.save()
                 # TODO: Ask Lewis on serializing
                 return Response(
-                    {"detail": "User has checked in successfully."},
+                    {
+                        "detail": "User has checked in successfully.",
+                        "slug": timesheet.slug,
+                        "reference": timesheet.reference,
+                    },
                     status=status.HTTP_200_OK,
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# class CheckoutView(APIView):
-#     permission_classes = [IsAuthenticated, IsCeoOrIsManagerOrIsEmployee]
-
-#     def patch(self, request, *args, **kwargs):
-#         serializer = TimesheetSerializer(data=request.data)
-#         if serializer.is_valid():
-#             user = request.user
-#             shift = serializer.validated_data.get("shift")
-#             date = serializer.validated_data.get("date")
-
-#             try:
-#                 shift = Schedule.objects.get(reference=shift)
-#             except Schedule.DoesNotExist:
-#                 return Response(
-#                     {"detail": "Invalid shift."}, status=status.HTTP_400_BAD_REQUEST
-#                 )
 
 
 class CheckoutView(generics.RetrieveUpdateAPIView):
@@ -156,18 +153,19 @@ class CheckoutView(generics.RetrieveUpdateAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # automatically check out
+        # Automatically check out
         instance.checkout = timezone.now()
 
-        # calculate total hours
+        # Calculate total hours
         total_hours = (instance.checkout - instance.checkin).total_seconds() / 3600
         instance.total_hours = round(total_hours, 2)
 
         # Determine if this time qualifies as overtime based on the shift's schedule
-        if (
-            total_hours
-            > (instance.shift.end_time - instance.shift.start_time).seconds / 3600
-        ):
+        start_time = datetime.combine(instance.date, instance.shift.start_time)
+        end_time = datetime.combine(instance.date, instance.shift.end_time)
+        shift_duration = (end_time - start_time).total_seconds() / 3600
+
+        if total_hours > shift_duration:
             instance.is_overtime = True
 
         instance.save()
