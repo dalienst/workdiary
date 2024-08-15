@@ -50,7 +50,7 @@ class CheckinView(APIView):
 
             # checking if the shift and date are valid
             try:
-                shift = Schedule.objects.get(reference=shift)
+                shift = Schedule.objects.get(reference=shift.reference)
             except Schedule.DoesNotExist:
                 return Response(
                     {"detail": "Invalid shift."}, status=status.HTTP_400_BAD_REQUEST
