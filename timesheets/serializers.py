@@ -26,4 +26,5 @@ class TimesheetSerializer(serializers.ModelSerializer):
             "updated_at",
             "slug",
             "reference",
+            "overtime_hours",
         )

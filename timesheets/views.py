@@ -155,6 +155,9 @@ class CheckoutView(generics.RetrieveUpdateAPIView):
     lookup_field = "slug"
 
     def get_queryset(self):
+        """
+        Get a specific timesheet for the authenticated user.
+        """
         return Timesheet.objects.filter(user=self.request.user)
 
     def update(self, request, *args, **kwargs):
@@ -175,7 +178,6 @@ class CheckoutView(generics.RetrieveUpdateAPIView):
         instance.total_hours = round(total_hours, 2)
 
         # Determine if this time qualifies as overtime based on the shift's schedule
-
         shift_start_datetime = datetime.combine(
             instance.date, instance.shift.start_time
         )
@@ -190,9 +192,13 @@ class CheckoutView(generics.RetrieveUpdateAPIView):
         overtime_threshold = float(instance.shift.overtime_threshold)
 
         if total_hours > shift_duration + overtime_threshold:
+            # TODO: consult on the overtime calculation
             instance.is_overtime = True
+            overtime_hours = total_hours - shift_duration
+            instance.overtime_hours = round(overtime_hours, 2)
         else:
             instance.is_overtime = False
+            instance.overtime_hours = 0
 
         instance.save()
 

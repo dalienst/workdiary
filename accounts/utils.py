@@ -4,7 +4,7 @@ import string
 
 def generate_slug():
     characters = string.ascii_letters + string.digits
-    random_string = "".join(secrets.choice(characters) for _ in range(16))
+    random_string = "".join(secrets.choice(characters) for _ in range(24))
     return random_string
 
 

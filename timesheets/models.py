@@ -24,6 +24,9 @@ class Timesheet(UniversalIdModel, TimeStampedModel, ReferenceSlugModel):
         max_length=10,
         default="Regular",
     )
+    overtime_hours = models.DecimalField(
+        max_digits=5, decimal_places=2, null=True, blank=True
+    )
 
     class Meta:
         verbose_name = "Timesheet"
