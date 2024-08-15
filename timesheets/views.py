@@ -91,11 +91,12 @@ class CheckinView(APIView):
                         {"detail": "User has already checked out."},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
-                # elif timesheet.checkin > shift.end_time:
-                #     return Response(
-                #         {"detail": "You cannot check in after shift end time."},
-                #         status=status.HTTP_400_BAD_REQUEST,
-                #     )
+                # prevent checkin after shift end time in a day before or on the shift start time
+                elif timesheet.checkin.time() > shift.end_time:
+                    return Response(
+                        {"detail": "You cannot check in after the shift end time."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
                 elif timesheet.checkin:
                     # check if user has already checked in
                     return Response(
