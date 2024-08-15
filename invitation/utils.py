@@ -26,13 +26,13 @@ def send_invitation_email(email, token, user, company):
             "email": email,
             "token": token,
             "domain": DOMAIN,
-            "user": user,
+            "user": user.first_name + " " + user.last_name,
             "company": company,
         },
     )
 
     send_mail(
-        "Invitation to join SUPPCO",
+        "Invitation",
         email_body,
         from_email=user,
         recipient_list=[email],

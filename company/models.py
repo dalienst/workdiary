@@ -15,7 +15,7 @@ class Company(UniversalIdModel, TimeStampedModel):
     model for company or businesses
     """
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="company")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="companies")
     name = models.CharField(max_length=255, unique=True)
     location = models.CharField(max_length=255)
     contact = models.CharField(max_length=255)
@@ -23,9 +23,7 @@ class Company(UniversalIdModel, TimeStampedModel):
     field = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     logo = CloudinaryField("company_logo", blank=True, null=True)
-    employees = models.ManyToManyField(
-        User, related_name="company_employees", blank=True
-    )
+    employees = models.ManyToManyField(User, related_name="company", blank=True)
     slug = models.SlugField(max_length=400, unique=True, blank=True, null=True)
     reference = models.CharField(max_length=10, blank=True, null=True, unique=True)
 
