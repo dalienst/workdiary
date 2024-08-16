@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "roles",
     "schedules",
     "timesheets",
+    "payroll",
 ]
 
 MIDDLEWARE = [

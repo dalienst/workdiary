@@ -67,6 +67,7 @@ class User(
     is_ceo = models.BooleanField(default=False)
     is_employee = models.BooleanField(default=False)
     is_manager = models.BooleanField(default=False)
+    is_finance = models.BooleanField(default=False)
 
     objects = UserManager()
     REQUIRED_FIELDS = ["first_name", "last_name", "password"]
