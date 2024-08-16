@@ -27,11 +27,17 @@ class Payroll(TimeStampedModel, UniversalIdModel, ReferenceSlugModel):
     schedule = models.ForeignKey(
         Schedule, on_delete=models.CASCADE, related_name="shift_payrolls"
     )
-    regular_hours = models.DecimalField(max_digits=5, decimal_places=2)
+    regular_hours = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True
+    )
     overtime_hours = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
-    gross_pay = models.DecimalField(max_digits=10, decimal_places=2)
+    gross_pay = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
     deductions = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    net_pay = models.DecimalField(max_digits=10, decimal_places=2)
+    net_pay = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
     is_locked = models.BooleanField(default=False)
 
     class Meta:
