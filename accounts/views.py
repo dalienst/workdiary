@@ -45,6 +45,7 @@ class TokenView(APIView):
                         "is_ceo": user.is_ceo,
                         "is_manager": user.is_manager,
                         "is_personal": user.is_personal,
+                        "is_finance": user.is_finance,
                         "token": token.key,
                     }
                     return Response(user_details, status=status.HTTP_200_OK)
