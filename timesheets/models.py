@@ -12,7 +12,9 @@ class Timesheet(UniversalIdModel, TimeStampedModel, ReferenceSlugModel):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="employee_timesheets"
     )
-    shift = models.ForeignKey(Schedule, on_delete=models.CASCADE, related_name="shifts")
+    shift = models.ForeignKey(
+        Schedule, on_delete=models.CASCADE, related_name="shift_timesheets"
+    )
     date = models.DateField(default=timezone.now)
     checkin = models.DateTimeField(null=True, blank=True)
     checkout = models.DateTimeField(null=True, blank=True)
@@ -27,6 +29,8 @@ class Timesheet(UniversalIdModel, TimeStampedModel, ReferenceSlugModel):
     overtime_hours = models.DecimalField(
         max_digits=5, decimal_places=2, null=True, blank=True
     )
+    # TODO: consider adding company field to Timesheet model
+    # TODO: restrict employees to just one company. Although, what if they work in multiple companies for the same owner?
 
     class Meta:
         verbose_name = "Timesheet"

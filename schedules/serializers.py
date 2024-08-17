@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from company.models import Company
 from schedules.models import Schedule
+from timesheets.serializers import TimesheetSerializer
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
@@ -19,6 +20,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
         default=0.0,
         help_text="Number of hours after which overtime applies.",
     )
+    shift_timesheets = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Schedule
@@ -35,4 +37,10 @@ class ScheduleSerializer(serializers.ModelSerializer):
             "slug",
             "reference",
             "overtime_threshold",
+            "shift_timesheets",
         )
+
+    def get_shift_timesheets(self, obj):
+        shift_timesheets = obj.shift_timesheets.all()
+        serializer = TimesheetSerializer(shift_timesheets, many=True)
+        return serializer.data

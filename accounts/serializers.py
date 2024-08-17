@@ -15,6 +15,7 @@ from invitation.models import Invitation
 from invoices.serializers import InvoiceSerializer
 from projects.serializers import ProjectSerializer
 from tasks.serializers import TaskSerializer
+from timesheets.serializers import TimesheetSerializer
 
 User = get_user_model()
 
@@ -48,6 +49,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
     tasks = serializers.SerializerMethodField(read_only=True)
     company = serializers.SerializerMethodField(read_only=True)
     companies = serializers.SerializerMethodField(read_only=True)
+    employee_timesheets = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
@@ -77,6 +79,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
             "tasks",
             "company",
             "companies",
+            "employee_timesheets",
         )
 
     def create(self, validated_data, role_field):
@@ -114,6 +117,11 @@ class BaseUserSerializer(serializers.ModelSerializer):
     def get_companies(self, obj):
         companies = obj.companies.all()
         serializer = CompanySerializer(companies, many=True)
+        return serializer.data
+
+    def get_employee_timesheets(self, obj):
+        employee_timesheets = obj.employee_timesheets.all()
+        serializer = TimesheetSerializer(employee_timesheets, many=True)
         return serializer.data
 
 
