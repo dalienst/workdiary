@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from company.models import Company
 from roles.serializers import RoleSerializer
@@ -9,7 +10,9 @@ User = get_user_model()
 
 
 class CompanySerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=255)
+    name = serializers.CharField(
+        max_length=255, validators=[UniqueValidator(queryset=Company.objects.all())]
+    )
     user = serializers.CharField(read_only=True, source="user.email")
     location = serializers.CharField(max_length=255)
     contact = serializers.CharField(max_length=255)
