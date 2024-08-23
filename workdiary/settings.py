@@ -57,6 +57,10 @@ INSTALLED_APPS = [
     "tasks",
     "company",
     "invitation",
+    "roles",
+    "schedules",
+    "timesheets",
+    "payroll",
 ]
 
 MIDDLEWARE = [

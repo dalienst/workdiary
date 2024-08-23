@@ -15,6 +15,7 @@ from invitation.models import Invitation
 from invoices.serializers import InvoiceSerializer
 from projects.serializers import ProjectSerializer
 from tasks.serializers import TaskSerializer
+from timesheets.serializers import TimesheetSerializer
 
 User = get_user_model()
 
@@ -47,6 +48,8 @@ class BaseUserSerializer(serializers.ModelSerializer):
     projects = serializers.SerializerMethodField(read_only=True)
     tasks = serializers.SerializerMethodField(read_only=True)
     company = serializers.SerializerMethodField(read_only=True)
+    companies = serializers.SerializerMethodField(read_only=True)
+    employee_timesheets = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
@@ -64,6 +67,10 @@ class BaseUserSerializer(serializers.ModelSerializer):
             "is_superuser",
             "is_active",
             "is_client",
+            "is_employee",
+            "is_ceo",
+            "is_manager",
+            "is_personal",
             "created_at",
             "updated_at",
             "clients",
@@ -71,6 +78,8 @@ class BaseUserSerializer(serializers.ModelSerializer):
             "projects",
             "tasks",
             "company",
+            "companies",
+            "employee_timesheets",
         )
 
     def create(self, validated_data, role_field):
@@ -101,19 +110,29 @@ class BaseUserSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def get_company(self, obj):
-        company = obj.company
-        serializer = CompanySerializer(company)
+        company = obj.company.all()
+        serializer = CompanySerializer(company, many=True)
+        return serializer.data
+
+    def get_companies(self, obj):
+        companies = obj.companies.all()
+        serializer = CompanySerializer(companies, many=True)
+        return serializer.data
+
+    def get_employee_timesheets(self, obj):
+        employee_timesheets = obj.employee_timesheets.all()
+        serializer = TimesheetSerializer(employee_timesheets, many=True)
         return serializer.data
 
 
 class UserSerializer(BaseUserSerializer):
     def create(self, validated_data):
-        return self.create(validated_data, "is_personal")
+        return super().create(validated_data, role_field="is_personal")
 
 
 class CeoSerializer(BaseUserSerializer):
     def create(self, validated_data):
-        return self.create(validated_data, "is_ceo")
+        return super().create(validated_data, role_field="is_ceo")
 
 
 class EmployeeSerializer(BaseUserSerializer):
@@ -135,7 +154,7 @@ class EmployeeSerializer(BaseUserSerializer):
             raise serializers.ValidationError("Token has expired.")
 
         # Create the user and set the employee flag
-        user = self.create_user(validated_data, "is_employee")
+        user = super().create(validated_data, role_field="is_employee")
 
         # Associate the user with the company
         user.company.add(invitation.company)

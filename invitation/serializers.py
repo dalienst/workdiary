@@ -45,6 +45,7 @@ class InvitationSerializer(serializers.ModelSerializer):
         if existing_invitation:
             now = django_timezone.now()
             if existing_invitation.expiry > now:
+                # send_invitation_email(email, existing_invitation.token, user, company)
                 return existing_invitation
             else:
                 # invitation exists but expired, update and resend

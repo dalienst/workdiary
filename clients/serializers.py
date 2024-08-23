@@ -12,7 +12,7 @@ class ClientSerializer(serializers.ModelSerializer):
         validators=[UniqueValidator(queryset=Client.objects.all())],
     )
     phone = serializers.CharField(max_length=15, required=False)
-    user = serializers.CharField(read_only=True, source="user.username")
+    user = serializers.CharField(read_only=True, source="user.email")
     invoice = serializers.SerializerMethodField(read_only=True)
 
     class Meta:

@@ -13,3 +13,18 @@ class IsCeo(permissions.BasePermission):
 class IsCeoOrIsManager(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
         return request.user.is_ceo or request.user.is_manager
+
+
+class IsCeoOrIsManagerOrIsEmployee(permissions.BasePermission):
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        return (
+            request.user.is_ceo
+            or request.user.is_manager
+            or request.user.is_employee
+            or request.user.is_finance
+        )
+
+
+class IsFinanceOrIsCeo(permissions.BasePermission):
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        return request.user.is_finance or request.user.is_ceo
